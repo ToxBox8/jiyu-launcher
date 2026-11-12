@@ -1,0 +1,20 @@
+name: Compilar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Compilar
+        run: cargo build --release --locked
+      - name: Pruebas
+        run: cargo test --release --locked
+      - name: Instalador
+        run: bash -n instalar.sh

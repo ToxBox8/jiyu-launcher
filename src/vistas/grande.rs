@@ -188,7 +188,7 @@ pub fn vista(app: &App) -> E<'_> {
     cuenta = cuenta.push(text(app.cuenta_activa().map(|c| c.nombre.clone()).unwrap_or_else(|| "Sin cuenta".into())).size(16));
     let cabecera = container(
         row![
-            image(app.logo.clone()).width(30).height(30),
+            image(app.logo.clone()).width(32).height(32),
             text("Jiyu Launcher").size(22).font(SEMI),
             text("Big Picture").size(16).color(p.dim),
             horizontal_space(),

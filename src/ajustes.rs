@@ -155,6 +155,10 @@ pub struct Ajustes {
     pub proxy: String,
     /// Al cerrar el juego, volver a abrir el launcher.
     pub reabrir: bool,
+    /// El logo de Jiyu (16 px) abajo a la izquierda dentro del juego: un mod nativo que se añade al compilar.
+    pub logo_juego: bool,
+    /// El logo de Jiyu como icono de la ventana del juego de Horizon (su entrada `horizon.desktop`).
+    pub icono_juego: bool,
     /// Tus servidores, que se añaden a la lista Multijugador de todas tus instancias.
     pub servidores: Vec<crate::servidores::Servidor>,
     pub servidores_siempre: bool,
@@ -207,6 +211,8 @@ impl Default for Ajustes {
             mascota: "auto".into(),
             proxy: String::new(),
             reabrir: true,
+            logo_juego: false,
+            icono_juego: false,
             servidores: Vec::new(),
             servidores_siempre: true,
             carpetas: Vec::new(),

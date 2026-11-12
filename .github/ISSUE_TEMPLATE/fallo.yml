@@ -1,0 +1,27 @@
+name: Algo falla
+description: Algo no funciona como debería
+labels: [fallo]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: Qué pasa
+      description: Qué hiciste, qué esperabas y qué pasó.
+    validations:
+      required: true
+  - type: dropdown
+    id: instancia
+    attributes:
+      label: Tipo de instancia
+      options: [Horizon (Rust), Java de Horizon, Prism, No tiene que ver con una instancia]
+  - type: input
+    id: versiones
+    attributes:
+      label: Versiones
+      description: La de Jiyu Launcher (Ajustes → Avanzado) y la de Horizon.
+  - type: textarea
+    id: registro
+    attributes:
+      label: Registro
+      description: Si es al jugar, el final de Editar → Registro. Si es al descargar, el error de la cola de descargas.
+      render: text

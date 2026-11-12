@@ -1,0 +1,11 @@
+name: Idea
+description: Algo que te gustaría que tuviera
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Qué te gustaría
+      description: Qué quieres hacer y por qué. Si existe en otro launcher (Prism, Steam…), dilo.
+    validations:
+      required: true

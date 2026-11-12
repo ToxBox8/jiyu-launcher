@@ -477,6 +477,8 @@ pub struct ModHorizon {
     pub dependencia: bool,
     /// Mod nativo de Horizon (.hnmod): hay que compilar el juego con él para que cargue.
     pub nativo: bool,
+    /// Su archivo, relativo a la carpeta de la instancia (`horizon-native-mods/x.hnmod`).
+    pub archivo: String,
 }
 
 /// Lo que va pasando al compilar los mods nativos de una instancia.
@@ -488,7 +490,7 @@ pub enum Compila {
 
 /// Compila el juego con los mods nativos de la instancia (`native-build`). La primera vez Horizon baja su
 /// Rust y tarda 20–30 minutos; luego es incremental. Va contando la última línea que escribe.
-pub fn compilar(instancia: String) -> impl iced::futures::Stream<Item = Compila> {
+pub fn compilar(instancia: String, carpeta: PathBuf, con_logo: bool) -> impl iced::futures::Stream<Item = Compila> {
     use iced::futures::SinkExt;
     use tokio::io::{AsyncBufReadExt, BufReader};
     iced::stream::channel(32, move |mut tx| async move {
@@ -496,8 +498,38 @@ pub fn compilar(instancia: String) -> impl iced::futures::Stream<Item = Compila>
             let _ = tx.send(Compila::Fin(Err("No encuentro horizon-launcher".into()))).await;
             return;
         };
+        // Con el logo de Jiyu: se compila una carpeta con los mods nativos de la instancia y el del logo.
+        let mut args: Vec<std::ffi::OsString> = vec!["native-build".into()];
+        if con_logo {
+            let _ = tx.send(Compila::Linea("Preparando los mods y el logo de Jiyu…".into())).await;
+            let mods = mods_horizon(instancia.clone()).await.unwrap_or_default();
+            let hnmods: Vec<PathBuf> = mods
+                .iter()
+                .filter(|m| m.nativo)
+                .filter_map(|m| {
+                    let a = carpeta.join(&m.archivo);
+                    if a.is_file() {
+                        return Some(a);
+                    }
+                    carpeta.parent().map(|p| p.join(&m.archivo)).filter(|b| b.is_file())
+                })
+                .collect();
+            let inst = instancia.clone();
+            match tokio::task::spawn_blocking(move || crate::marca::prepara_compilacion(&inst, &hnmods)).await {
+                Ok(Ok(dir)) => args.push(dir.into()),
+                Ok(Err(e)) => {
+                    let _ = tx.send(Compila::Fin(Err(e))).await;
+                    return;
+                }
+                Err(e) => {
+                    let _ = tx.send(Compila::Fin(Err(e.to_string()))).await;
+                    return;
+                }
+            }
+        }
+        args.extend(["--instance".into(), instancia.clone().into(), "--trust-native-code".into()]);
         let hijo = tokio::process::Command::new(bin)
-            .args(["native-build", "--instance", &instancia, "--trust-native-code"])
+            .args(&args)
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -564,6 +596,7 @@ pub async fn mods_horizon(instancia: String) -> Result<Vec<ModHorizon>, String> 
             fuente: m["source"].as_str().unwrap_or_default().to_string(),
             dependencia: m["dependency"].as_bool().unwrap_or(false),
             nativo: m["file"].as_str().is_some_and(|f| f.ends_with(".hnmod")),
+            archivo: m["file"].as_str().unwrap_or_default().to_string(),
         })
         .collect())
 }

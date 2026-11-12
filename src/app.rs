@@ -76,6 +76,8 @@ pub enum Flag {
     Grafica,
     ServidoresSiempre,
     Reabrir,
+    LogoJuego,
+    IconoJuego,
 }
 
 /// Un archivo de mods/, resourcepacks/ o shaderpacks/.
@@ -638,7 +640,7 @@ impl App {
             pide_nombre: None,
             cara: None,
             carpeta_ico: iconos::carpeta(p.java, 32),
-            logo: iconos::logo_jiyu(48),
+            logo: iconos::logo_jiyu(64),
             encima: None,
             icono_defecto: None,
             estrella_llena: iconos::estrella(true, p.rust),
@@ -1170,6 +1172,10 @@ impl App {
             }
             Msg::Jugar(clave) => {
                 let Some(inst) = self.instancia(&clave).cloned() else { return Task::none() };
+                // El icono de Jiyu en la ventana del juego: se vuelve a poner por si Horizon rehízo su entrada.
+                if self.aj.icono_juego && inst.motor == Motor::Rust {
+                    let _ = crate::marca::icono_ventana_juego(true);
+                }
                 // Tus servidores, en su lista Multijugador antes de jugar (solo la primera vez en esta sesión).
                 if self.aj.servidores_siempre && !self.aj.servidores.is_empty() && !self.sincronizadas.contains(&clave) {
                     self.sincronizadas.insert(clave.clone());
@@ -1398,7 +1404,7 @@ impl App {
                 }
                 self.compilado.remove(&clave);
                 self.compilando.insert(clave.clone(), "Empezando…".into());
-                return Task::stream(motor::compilar(inst.id)).map(move |c| Msg::Compilando(clave.clone(), c));
+                return Task::stream(motor::compilar(inst.id, inst.carpeta, self.aj.logo_juego)).map(move |c| Msg::Compilando(clave.clone(), c));
             }
             Msg::Compilando(clave, c) => match c {
                 motor::Compila::Linea(l) => {
@@ -1856,6 +1862,8 @@ impl App {
                     Flag::Grafica => aj.grafica = v,
                     Flag::ServidoresSiempre => aj.servidores_siempre = v,
                     Flag::Reabrir => aj.reabrir = v,
+                    Flag::LogoJuego => aj.logo_juego = v,
+                    Flag::IconoJuego => aj.icono_juego = v,
                 }
                 if perfil {
                     aj.perfil = Perfil::Propio;
@@ -1866,6 +1874,11 @@ impl App {
                 }
                 if f == Flag::VerPrism {
                     return self.carga();
+                }
+                if f == Flag::IconoJuego {
+                    if let Err(e) = crate::marca::icono_ventana_juego(v) {
+                        self.avisa(format!("No pude cambiar el icono del juego: {e}"), true);
+                    }
                 }
             }
             Msg::ATamano(t) => {

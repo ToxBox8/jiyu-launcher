@@ -179,6 +179,7 @@ fn compilar<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
     let p = app.p;
     let clave = inst.clave();
     let nativos = app.editar.mods_h.iter().filter(|m| m.nativo).count();
+    let logo = app.aj.logo_juego;
     if let Some(l) = app.compilando.get(&clave) {
         return aviso(
             p,
@@ -212,15 +213,21 @@ fn compilar<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
     let estado: E = match app.compilado.get(&clave) {
         Some(Ok(())) => text("✓ Compilado: ya cargan al jugar").size(12).color(p.ok).into(),
         Some(Err(e)) => text(format!("Falló: {e}")).size(12).color(p.mal).into(),
-        None if nativos == 0 => tenue(&p, "No tienes mods nativos instalados. Búscalos en Descargar mods → Horizon (nativos).").into(),
+        None if nativos == 0 && !logo => tenue(&p, "No tienes mods nativos instalados. Búscalos en Descargar mods → Horizon (nativos).").into(),
+        None if logo => tenue(&p, "Se compilan junto al logo de Jiyu (Ajustes → Horizon). Hazlo cada vez que cambien tus mods nativos.").into(),
         None => tenue(&p, "Después de instalar, quitar o actualizar mods nativos, compila para que carguen al jugar.").into(),
     };
     aviso(
         p,
         p.rust,
         row![
-            column![text(format!("Mods nativos: {nativos}")).size(13).font(SEMI), estado].spacing(3).width(Length::Fill),
-            btn(p, "Compilar mods", Boton::Primario, (nativos > 0).then(|| Msg::PedirCompilar(Some(clave.clone())))),
+            column![
+                text(if logo { format!("Mods nativos: {nativos} + logo de Jiyu") } else { format!("Mods nativos: {nativos}") }).size(13).font(SEMI),
+                estado
+            ]
+            .spacing(3)
+            .width(Length::Fill),
+            btn(p, "Compilar mods", Boton::Primario, (nativos > 0 || logo).then(|| Msg::PedirCompilar(Some(clave.clone())))),
         ]
         .spacing(12)
         .align_y(Alignment::Center),

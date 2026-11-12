@@ -253,6 +253,21 @@ fn horizon(app: &App) -> E<'_> {
         ]
         .spacing(10)
         .align_y(Alignment::Center),
+        seccion(&p, "Jiyu dentro del juego"),
+        interruptor(
+            p,
+            "Logo de Jiyu en el juego",
+            "El pulso de 16 px abajo a la izquierda, también en los menús (F1 lo esconde). Es un mod nativo: se añade al compilar en Editar → Mods nativos",
+            app.aj.logo_juego,
+            flag(Flag::LogoJuego),
+        ),
+        interruptor(
+            p,
+            "Icono de Jiyu en la ventana del juego",
+            "El de la barra de tareas y el selector de ventanas, en las instancias de Horizon",
+            app.aj.icono_juego,
+            flag(Flag::IconoJuego),
+        ),
         seccion(&p, "Versiones"),
         interruptor(
             p,

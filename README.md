@@ -1,16 +1,24 @@
 <div align="center">
 
-<img src="assets/escritorio/jiyu-launcher.svg" width="96" alt="">
+<img src="docs/marca/banner.png" alt="Jiyu Launcher" width="100%">
 
-# Jiyu Launcher
+<p>
+<img src="https://img.shields.io/badge/Rust-iced%200.13-F4511E?style=flat-square&logo=rust&logoColor=white" alt="Rust + iced">
+<img src="https://img.shields.io/badge/Linux-x86__64-0E0E10?style=flat-square&logo=linux&logoColor=white" alt="Linux x86_64">
+<img src="https://img.shields.io/badge/motor-Horizon-F4511E?style=flat-square" alt="Motor: Horizon">
+<img src="https://img.shields.io/badge/licencia-MIT-0E0E10?style=flat-square" alt="Licencia MIT">
+<img src="https://img.shields.io/badge/telemetr%C3%ADa-ninguna-2E7D32?style=flat-square" alt="Sin telemetría">
+</p>
 
 **Un launcher de Minecraft con la estructura de Prism Launcher, para jugar a la vez a Horizon (Minecraft reescrito en Rust) y a Minecraft Java de siempre.**
 
-Escrito en Rust con [iced](https://iced.rs). Unos 50 MB de memoria en reposo, 0 % de CPU, y se aparta mientras juegas.
+Unos 50 MB de memoria en reposo, 0 % de CPU, y se aparta mientras juegas.
+
+[Instalar](#instalar) · [Cómo se usa](#cómo-se-usa) · [Temas](#temas) · [Ecosistema Jiyu](#el-ecosistema-jiyu) · [Preguntas](#preguntas-frecuentes)
 
 </div>
 
-![La ventana principal, con las instancias por grupos](docs/capturas/principal.png)
+![La ventana principal con el tema Jiyu Pulse](docs/capturas/principal.png)
 
 ## Qué tiene
 
@@ -27,8 +35,31 @@ Escrito en Rust con [iced](https://iced.rs). Unos 50 MB de memoria en reposo, 0 
 | Big Picture | Explorar mods |
 |---|---|
 | ![Big Picture](docs/capturas/big-picture.png) | ![Explorar](docs/capturas/explorar.png) |
-| **Carpetas** | **Archivador** |
-| ![Carpetas](docs/capturas/carpetas.png) | ![Archivador](docs/capturas/archivo.png) |
+| **Mods nativos de Horizon** | **Servidores** |
+| ![Mods nativos](docs/capturas/mods-nativos.png) | ![Servidores](docs/capturas/servidores.png) |
+| **Carpetas** | **Ajustes** |
+| ![Carpetas](docs/capturas/carpetas.png) | ![Ajustes](docs/capturas/ajustes.png) |
+
+## Temas
+
+Cuatro temas, que se cambian al momento en *Ajustes → Apariencia*. El principal es **Jiyu Pulse**: sumi (casi negro) con el bermellón shu de la marca Jiyu, la mascota de Jiyu en la esquina y botones redondeados.
+
+| Jiyu Pulse | Matugen |
+|---|---|
+| ![Tema Jiyu Pulse](docs/capturas/temas/jiyu-pulse.png) | ![Tema Matugen](docs/capturas/temas/matugen.png) |
+| **Prism Dark** | **Prism Bright** |
+| ![Tema Prism Dark](docs/capturas/temas/prism-dark.png) | ![Tema Prism Bright](docs/capturas/temas/prism-bright.png) |
+
+## El ecosistema Jiyu
+
+Jiyu Launcher es una pieza de **Jiyu**, una familia de apps libres hechas por una persona, con la misma marca (el pulso, el bermellón shu sobre sumi y la mascota) y las mismas reglas: sin anuncios, sin cuentas propias y sin telemetría.
+
+| | App | Qué es | Estado |
+|---|---|---|---|
+| <img src="assets/logo/jiyu-32.svg" width="32" alt=""> | **Jiyu Launcher** | Este launcher de Minecraft para Horizon, Java y Prism, en Rust | En desarrollo, Linux |
+| <img src="assets/logo/jiyu-pulse.svg" width="32" alt=""> | **Jiyu Pulse** | App de música para iPhone y Android: gratis, sin anuncios ni cuenta, con descargas, letras, Jam entre móviles y reproductores con personalidad (casete, vinilo) | En desarrollo |
+
+Jiyu Pulse lleva el pulso de la marca en trazo suave. Jiyu Launcher lo lleva dibujado en píxeles, como un bloque más de Minecraft: el de 32 px es el del launcher y el de 16 px <img src="assets/logo/jiyu-16.svg" width="16" alt=""> es el que aparece dentro del juego.
 
 ## Instalar
 
@@ -142,11 +173,20 @@ Para jugar desde el sofá: `F11` o el botón *Big Picture* de la barra.
 |---|---|
 | Rendimiento | Perfiles según tu PC, cerrar el launcher al jugar, GameMode, MangoHud, gráfica dedicada, optimizaciones de NVIDIA, memoria y recolector de Java, páginas grandes, *Dibujar con la gráfica* y el servidor integrado de Horizon en su propio hilo |
 | Apariencia | Tema, insignia Rust/Java, filo de color, hexágono para las Rust, etiqueta bajo el nombre, mascota de la esquina, tamaño de los iconos y mostrar o no las instancias de Prism |
-| Horizon | Mods nativos (perfil de compilación y límite de su caché), versiones (instalar las nuevas solas, borrar las viejas y cuántas guardar) y argumentos del juego |
+| Horizon | Mods nativos (perfil de compilación y límite de su caché), Jiyu dentro del juego (logo e icono de la ventana), versiones (instalar las nuevas solas, borrar las viejas y cuántas guardar) y argumentos del juego |
 | Red y sistema | Proxy (http o socks5, vale para Horizon y para las descargas del launcher), volver a abrir el launcher al cerrar el juego, espacio de las cachés y lista de atajos |
 | Avanzado | Dónde están Horizon, Prism y tus ajustes |
 
 *Dibujar con la gráfica* (en Rendimiento) hace la ventana más fluida (sobre todo Big Picture a pantalla completa), pero gasta unos 150 MB en vez de 50. Se aplica al volver a abrir el launcher.
+
+### Jiyu dentro del juego (Horizon)
+
+En *Ajustes → Horizon → Jiyu dentro del juego*:
+
+- **Logo de Jiyu en el juego**: el pulso de 16 px abajo a la izquierda, en partida, en los menús y en la pantalla de título. `F1` lo esconde, como el resto de la interfaz, y se puede apagar en el propio juego (*Opciones → Mods → Jiyu Logo*). Es un mod nativo pequeño (`horizon-mod/`, va dentro del launcher): se añade al pulsar **Compilar mods** en *Editar → Mods nativos*, junto a tus otros mods nativos. Solo en las instancias Rust.
+- **Icono de Jiyu en la ventana del juego**: el logo de 16 px como icono del juego de Horizon en la barra de tareas y el selector de ventanas. Cambia el `Icon=` de `~/.local/share/applications/horizon.desktop` y lo vuelve a poner antes de cada partida, por si Horizon rehace ese archivo. Al apagarlo vuelve el icono de Horizon.
+
+Las instancias Java no pueden llevar el logo dentro: haría falta un mod de Fabric o Forge para cada versión.
 
 ## Teclas
 
@@ -182,6 +222,7 @@ Las descargas ya no dependen de él (salvo en sus propias instancias, donde va b
 
 ## Problemas conocidos
 
+- **Logo dentro del juego**: el mod se ha escrito contra la API de mods nativos de tu Horizon (nightly 11-08, API 410) y sus pruebas pasan, pero aún no se ha compilado dentro del juego. Si la compilación falla, el error sale en *Editar → Mods nativos*.
 - **Mando**: Big Picture se maneja con teclado y ratón; el mando todavía no.
 - **Tipografía**: no hay letras chinas, japonesas ni coreanas incluidas; esos nombres de mods salen con cuadros.
 - **Dibujo por software**: resaltar al pasar el ratón en los menús solo funciona con *Dibujar con la gráfica*. Sin ella dejaba restos al repintar.
@@ -217,7 +258,9 @@ cargo build --release
 ./target/release/jiyu-launcher
 ```
 
-La estructura del código, las medidas de rendimiento y cómo hacer capturas sin ratón están en [docs/DESARROLLO.md](docs/DESARROLLO.md).
+La estructura del código, las medidas de rendimiento y cómo hacer capturas sin ratón están en [docs/DESARROLLO.md](docs/DESARROLLO.md). Para colaborar, mira [CONTRIBUTING.md](CONTRIBUTING.md); los cambios de cada versión están en [CHANGELOG.md](CHANGELOG.md).
+
+El mod nativo del logo está en [`horizon-mod/`](horizon-mod/): sus pruebas se pasan con `rustc --test horizon-mod/mixins/jiyu_logo/runtime.rs`.
 
 ## Licencia
 

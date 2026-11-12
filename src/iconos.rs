@@ -483,26 +483,18 @@ fn trazo(color: &str, ancho: f32) -> String {
     format!(r##"fill="none" stroke="{color}" stroke-width="{ancho}" stroke-linecap="round" stroke-linejoin="round""##)
 }
 
-/// El símbolo de Jiyu (el «pulso»): dos arcos y la línea de encendido.
-pub const JIYU_SIMBOLO: &str = "M12,13a11,11 0,1 0,16 0M16,16.078a6,6 0,1 0,8 0M20,9v12";
-pub const SHU: u32 = 0xF4511E;
 
-/// El logo de Jiyu en shu, a `lado` píxeles.
-pub fn logo_jiyu(lado: u32) -> Handle {
-    svg(&format!(r##"<path d="{JIYU_SIMBOLO}" {}/>"##, trazo(&hexu(SHU), 2.5)), "6.5 6.5 27 27", lado)
-}
+/// El logo de Jiyu Launcher: el pulso en píxeles, 32×32 (el de 16×16 es el que va dentro del juego).
+pub const LOGO_32: &str = include_str!("../assets/logo/jiyu-32.svg");
 
-/// Icono de la ventana: el de la app de Jiyu (símbolo shu sobre sumi, con las esquinas redondeadas).
-pub fn icono_ventana() -> Option<iced::window::Icon> {
-    let cuerpo = format!(
-        r##"<rect x="0" y="0" width="40" height="40" rx="9" fill="#0E0E10"/><g transform="translate(20 20) scale(0.94) translate(-20 -20.3)"><path d="{JIYU_SIMBOLO}" {}/></g>"##,
-        trazo(&hexu(SHU), 2.5)
-    );
-    let lado = 128u32;
-    let fuente = format!(r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="{lado}" height="{lado}">{cuerpo}</svg>"##);
-    let arbol = resvg::usvg::Tree::from_str(&fuente, &resvg::usvg::Options::default()).ok()?;
+/// Pinta un SVG entero a `lado`×`lado` (RGBA sin premultiplicar). Para el logo en píxeles conviene un
+/// múltiplo de 32, así cada píxel del dibujo cae entero.
+fn rasteriza(fuente: &str, lado: u32) -> Option<Vec<u8>> {
+    let arbol = resvg::usvg::Tree::from_str(fuente, &resvg::usvg::Options::default()).ok()?;
     let mut lienzo = resvg::tiny_skia::Pixmap::new(lado, lado)?;
-    resvg::render(&arbol, resvg::tiny_skia::Transform::from_scale(lado as f32 / 40.0, lado as f32 / 40.0), &mut lienzo.as_mut());
+    let t = arbol.size();
+    let e = (lado as f32 / t.width()).min(lado as f32 / t.height());
+    resvg::render(&arbol, resvg::tiny_skia::Transform::from_scale(e, e), &mut lienzo.as_mut());
     let mut px = lienzo.take();
     for c in px.chunks_exact_mut(4) {
         let a = c[3] as u32;
@@ -512,7 +504,17 @@ pub fn icono_ventana() -> Option<iced::window::Icon> {
             }
         }
     }
-    iced::window::icon::from_rgba(px, lado, lado).ok()
+    Some(px)
+}
+
+/// El logo a `lado` píxeles (se ve nítido con el filtro «más cercano»).
+pub fn logo_jiyu(lado: u32) -> Handle {
+    rasteriza(LOGO_32, lado).map(|px| Handle::from_rgba(lado, lado, px)).unwrap_or_else(|| Lienzo::nuevo(lado, lado).handle())
+}
+
+/// Icono de la ventana: el mismo logo, a 128 px.
+pub fn icono_ventana() -> Option<iced::window::Icon> {
+    iced::window::icon::from_rgba(rasteriza(LOGO_32, 128)?, 128, 128).ok()
 }
 
 /// Chevron para abrir y cerrar grupos (se ve a 10 px).

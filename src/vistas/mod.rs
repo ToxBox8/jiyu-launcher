@@ -266,7 +266,7 @@ fn barra(app: &App) -> E<'_> {
     .style(tema::boton(p, Boton::Opcion(app.aj.esquina)))
     .on_press(Msg::AFlag(crate::app::Flag::Esquina, !app.aj.esquina));
     // La marca: el pulso de Jiyu y el nombre.
-    let marca = row![image(app.logo.clone()).width(20).height(20), text("Jiyu Launcher").size(14).font(SEMI)]
+    let marca = row![image(app.logo.clone()).width(32).height(32), text("Jiyu Launcher").size(14).font(SEMI)]
         .spacing(7)
         .align_y(Alignment::Center);
     let mut r = row![

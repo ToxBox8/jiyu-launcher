@@ -5,6 +5,7 @@
 //! el launcher no ocupa memoria ni CPU.
 
 mod ajustes;
+mod marca;
 mod app;
 mod datos;
 mod iconos;
