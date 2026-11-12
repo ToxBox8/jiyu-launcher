@@ -475,6 +475,81 @@ pub struct ModHorizon {
     pub version: String,
     pub fuente: String,
     pub dependencia: bool,
+    /// Mod nativo de Horizon (.hnmod): hay que compilar el juego con él para que cargue.
+    pub nativo: bool,
+}
+
+/// Lo que va pasando al compilar los mods nativos de una instancia.
+#[derive(Debug, Clone)]
+pub enum Compila {
+    Linea(String),
+    Fin(Result<(), String>),
+}
+
+/// Compila el juego con los mods nativos de la instancia (`native-build`). La primera vez Horizon baja su
+/// Rust y tarda 20–30 minutos; luego es incremental. Va contando la última línea que escribe.
+pub fn compilar(instancia: String) -> impl iced::futures::Stream<Item = Compila> {
+    use iced::futures::SinkExt;
+    use tokio::io::{AsyncBufReadExt, BufReader};
+    iced::stream::channel(32, move |mut tx| async move {
+        let Some(bin) = binario() else {
+            let _ = tx.send(Compila::Fin(Err("No encuentro horizon-launcher".into()))).await;
+            return;
+        };
+        let hijo = tokio::process::Command::new(bin)
+            .args(["native-build", "--instance", &instancia, "--trust-native-code"])
+            .stdin(Stdio::null())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .kill_on_drop(false)
+            .spawn();
+        let mut hijo = match hijo {
+            Ok(h) => h,
+            Err(e) => {
+                let _ = tx.send(Compila::Fin(Err(format!("No pude empezar a compilar: {e}")))).await;
+                return;
+            }
+        };
+        // Salida y errores por el mismo canal: las dos cuentan el progreso.
+        let (txl, mut rxl) = tokio::sync::mpsc::unbounded_channel::<String>();
+        if let Some(o) = hijo.stdout.take() {
+            let t = txl.clone();
+            tokio::spawn(async move {
+                let mut l = BufReader::new(o).lines();
+                while let Ok(Some(x)) = l.next_line().await {
+                    let _ = t.send(x);
+                }
+            });
+        }
+        if let Some(e) = hijo.stderr.take() {
+            let t = txl.clone();
+            tokio::spawn(async move {
+                let mut l = BufReader::new(e).lines();
+                while let Ok(Some(x)) = l.next_line().await {
+                    let _ = t.send(x);
+                }
+            });
+        }
+        drop(txl);
+        let mut ultimas: Vec<String> = Vec::new();
+        while let Some(l) = rxl.recv().await {
+            let l = l.trim().to_string();
+            if l.is_empty() {
+                continue;
+            }
+            let _ = tx.send(Compila::Linea(l.chars().take(160).collect())).await;
+            ultimas.push(l);
+            if ultimas.len() > 6 {
+                ultimas.remove(0);
+            }
+        }
+        let fin = match hijo.wait().await {
+            Ok(s) if s.success() => Ok(()),
+            Ok(_) => Err(ultimas.last().cloned().unwrap_or_else(|| "La compilación falló".into())),
+            Err(e) => Err(e.to_string()),
+        };
+        let _ = tx.send(Compila::Fin(fin)).await;
+    })
 }
 
 pub async fn mods_horizon(instancia: String) -> Result<Vec<ModHorizon>, String> {
@@ -488,6 +563,7 @@ pub async fn mods_horizon(instancia: String) -> Result<Vec<ModHorizon>, String> 
             version: m["version"].as_str().unwrap_or_default().to_string(),
             fuente: m["source"].as_str().unwrap_or_default().to_string(),
             dependencia: m["dependency"].as_bool().unwrap_or(false),
+            nativo: m["file"].as_str().is_some_and(|f| f.ends_with(".hnmod")),
         })
         .collect())
 }

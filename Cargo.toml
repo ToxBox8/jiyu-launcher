@@ -15,7 +15,7 @@ image = { version = "0.24", default-features = false, features = ["png", "jpeg",
 resvg = { version = "0.42", default-features = false }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tokio = { version = "1", features = ["process", "io-util", "time", "fs", "macros", "rt-multi-thread", "net"] }
+tokio = { version = "1", features = ["process", "io-util", "time", "fs", "macros", "rt-multi-thread", "net", "sync"] }
 
 [profile.release]
 opt-level = 3

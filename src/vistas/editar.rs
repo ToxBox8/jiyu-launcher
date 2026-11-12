@@ -142,6 +142,10 @@ fn mods<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
     .align_y(Alignment::Center)]
     .spacing(10);
 
+    if inst.motor == Motor::Rust && inst.origen == Origen::Horizon {
+        col = col.push(compilar(app, inst));
+    }
+
     if !ed.mods_h.is_empty() {
         col = col.push(seccion(&p, "Instalados con el buscador"));
         let mut t = Column::new().spacing(1);
@@ -151,7 +155,7 @@ fn mods<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
                     row![
                         txt(m.titulo.clone()).font(MEDIA).width(Length::Fill),
                         tenue(&p, m.version.clone()).width(90),
-                        tenue(&p, if m.dependencia { "dependencia".to_string() } else { m.fuente.clone() }).width(90),
+                        tenue(&p, if m.nativo { "nativo".to_string() } else if m.dependencia { "dependencia".to_string() } else { m.fuente.clone() }).width(90),
                         btn(p, "Quitar", Boton::Peligro, Some(Msg::EQuitarH(m.proyecto.clone()))).padding([2, 8]),
                     ]
                     .spacing(8)
@@ -167,6 +171,60 @@ fn mods<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
         col = col.push(tabla(app, &ed.mods, "Sin mods todavía. Busca uno o suelta el .jar en la carpeta mods."));
     }
     col.into()
+}
+
+/// Compilar los mods nativos (.hnmod): Horizon tiene que compilar el juego con ellos para que carguen.
+/// Pide confirmación porque su código corre con acceso total al ordenador.
+fn compilar<'a>(app: &'a App, inst: &'a Instancia) -> E<'a> {
+    let p = app.p;
+    let clave = inst.clave();
+    let nativos = app.editar.mods_h.iter().filter(|m| m.nativo).count();
+    if let Some(l) = app.compilando.get(&clave) {
+        return aviso(
+            p,
+            p.hl,
+            column![
+                text("Compilando el juego con tus mods nativos…").size(13).font(SEMI).color(p.hl),
+                text(l.clone()).size(12).color(p.dim),
+                tenue(&p, "Puedes cerrar esta ventana o seguir usando el launcher: sigue compilando y te aviso al terminar."),
+            ]
+            .spacing(4),
+        );
+    }
+    if app.confirmar_compilar.as_deref() == Some(clave.as_str()) {
+        return aviso(
+            p,
+            p.mal,
+            column![
+                text("Los mods nativos no van en una caja cerrada").size(13).font(SEMI),
+                tenue(&p, "Se ejecutan con acceso total a tu ordenador, como cualquier programa. Compila solo si confías en quien los hizo (los del registro de Horizon están revisados; los de GitHub, no)."),
+                tenue(&p, "La primera vez Horizon baja su propio Rust y tarda de 20 a 30 minutos. Después, solo unos minutos."),
+                row![
+                    horizontal_space(),
+                    btn(p, "Cancelar", Boton::Normal, Some(Msg::PedirCompilar(None))),
+                    btn(p, "Confío en ellos: compilar", Boton::Primario, Some(Msg::Compilar(clave.clone()))),
+                ]
+                .spacing(8),
+            ]
+            .spacing(6),
+        );
+    }
+    let estado: E = match app.compilado.get(&clave) {
+        Some(Ok(())) => text("✓ Compilado: ya cargan al jugar").size(12).color(p.ok).into(),
+        Some(Err(e)) => text(format!("Falló: {e}")).size(12).color(p.mal).into(),
+        None if nativos == 0 => tenue(&p, "No tienes mods nativos instalados. Búscalos en Descargar mods → Horizon (nativos).").into(),
+        None => tenue(&p, "Después de instalar, quitar o actualizar mods nativos, compila para que carguen al jugar.").into(),
+    };
+    aviso(
+        p,
+        p.rust,
+        row![
+            column![text(format!("Mods nativos: {nativos}")).size(13).font(SEMI), estado].spacing(3).width(Length::Fill),
+            btn(p, "Compilar mods", Boton::Primario, (nativos > 0).then(|| Msg::PedirCompilar(Some(clave.clone())))),
+        ]
+        .spacing(12)
+        .align_y(Alignment::Center),
+    )
 }
 
 /// Tabla de archivos con interruptor. La fila elegida usa el tinte de selección, distinto del botón «Quitar».

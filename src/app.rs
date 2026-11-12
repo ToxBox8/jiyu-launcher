@@ -315,6 +315,11 @@ pub struct App {
     /// Logos de mods por id de proyecto de Modrinth.
     pub logos: HashMap<String, Handle>,
     pub partidas: HashMap<String, EnMarcha>,
+    /// Compilaciones de mods nativos en marcha (clave → última línea) y la que pide confirmación.
+    pub compilando: HashMap<String, String>,
+    pub confirmar_compilar: Option<String>,
+    /// El resultado de la última compilación de cada instancia (para enseñarlo en su página de mods).
+    pub compilado: HashMap<String, Result<(), String>>,
     pub selector: Selector,
     pub carpeta_actual: String,
     pub arrastre: Option<String>,
@@ -343,6 +348,9 @@ pub struct App {
     /// Modo Big Picture (pantalla completa, para sofá y mando) y qué tarjeta está elegida (estante, posición).
     pub grande: bool,
     pub ultimo_bp: Option<Instant>,
+    /// El primer estante que se ve y, en cada estante, la primera tarjeta que se ve.
+    pub bp_fila0: usize,
+    pub bp_col0: HashMap<usize, usize>,
     pub bp: (usize, usize),
     pub gatos: HashMap<String, Handle>,
     /// Instancia sobre la que sueltas otra (para ordenarlas a mano).
@@ -541,6 +549,12 @@ pub enum Msg {
     BPMover(i32, i32),
     BPElegir(usize, usize),
     BPEditar,
+    BPClic(usize, usize),
+    BPRueda(f32, f32),
+    // Mods nativos de Horizon
+    PedirCompilar(Option<String>),
+    Compilar(String),
+    Compilando(String, motor::Compila),
     // Skin por instancia y armario 3D
     ESkin(String),
     SImportar,
@@ -610,6 +624,9 @@ impl App {
             abrir: std::env::var("RUSTCRAFT_ABRIR").ok(),
             logos: HashMap::new(),
             partidas: HashMap::new(),
+            compilando: HashMap::new(),
+            confirmar_compilar: None,
+            compilado: HashMap::new(),
             selector: Selector::default(),
             carpeta_actual: String::new(),
             arrastre: None,
@@ -632,6 +649,8 @@ impl App {
             grande: std::env::var("RUSTCRAFT_ABRIR").is_ok_and(|a| a == "grande"),
             bp: (0, 0),
             ultimo_bp: None,
+            bp_fila0: 0,
+            bp_col0: HashMap::new(),
             gatos: HashMap::new(),
             destino_inst: None,
             sv_estado: HashMap::new(),
@@ -700,7 +719,8 @@ impl App {
 
     pub fn subscription(&self) -> Subscription<Msg> {
         // Un latido cada 5 s solo para el contador de memoria de la barra de estado. Nada más corre en reposo.
-        let mut s = vec![iced::time::every(Duration::from_secs(5)).map(|_| Msg::Tick)];
+        // En Big Picture no: repintaría la pantalla entera cada 5 s para nada.
+        let mut s = if self.grande { vec![] } else { vec![iced::time::every(Duration::from_secs(5)).map(|_| Msg::Tick)] };
         // Soltar (fin de un arrastre o del giro de la skin) y el tamaño de la ventana (para el menú).
         s.push(iced::event::listen_with(|e, _, _| match e {
             iced::Event::Mouse(iced::mouse::Event::ButtonReleased(iced::mouse::Button::Left)) => Some(Msg::Soltar),
@@ -1053,6 +1073,7 @@ impl App {
                 | Msg::XResultados(_)
                 | Msg::XPausa(_)
                 | Msg::XHecho(..)
+                | Msg::Compilando(..)
                 | Msg::XInstalados(..)
                 | Msg::NJava(_)
                 | Msg::NPacks(_)
@@ -1298,10 +1319,17 @@ impl App {
                 self.grande = !self.grande;
                 self.menu = None;
                 if self.grande {
+                    self.bp_fila0 = 0;
+                    self.bp_col0.clear();
                     self.bp_desde_sel();
                 }
                 let modo = if self.grande { iced::window::Mode::Fullscreen } else { iced::window::Mode::Windowed };
-                return iced::window::get_latest().and_then(move |id| iced::window::change_mode(id, modo));
+                let ventana = iced::window::get_latest().and_then(move |id| iced::window::change_mode(id, modo));
+                if self.grande {
+                    let (f, c) = self.bp;
+                    return Task::batch([ventana, self.update(Msg::BPElegir(f, c))]);
+                }
+                return ventana;
             }
             Msg::BPMover(dx, dy) => {
                 if !self.grande || self.dlg.is_some() {
@@ -1317,28 +1345,83 @@ impl App {
                     c = c.min(estantes[f].1.len().saturating_sub(1));
                 }
                 c = (c as i32 + dx).clamp(0, estantes[f].1.len() as i32 - 1) as usize;
+                if (f, c) == self.bp {
+                    return Task::none();
+                }
+                return self.update(Msg::BPElegir(f, c));
+            }
+            Msg::BPClic(f, c) => {
+                // Con el ratón: un clic elige, y otro clic rápido sobre la misma juega (como el doble clic).
+                // Las flechas nunca juegan: para eso está Intro.
+                let doble = self.bp == (f, c) && self.ultimo_bp.is_some_and(|t| t.elapsed() < Duration::from_millis(450));
+                self.ultimo_bp = if doble { None } else { Some(Instant::now()) };
+                if doble {
+                    let clave = self.estantes().get(f).and_then(|e| e.1.get(c)).map(|i| i.clave());
+                    if let Some(k) = clave.filter(|k| !self.partidas.contains_key(k)) {
+                        return self.update(Msg::Jugar(k));
+                    }
+                    return Task::none();
+                }
                 return self.update(Msg::BPElegir(f, c));
             }
             Msg::BPElegir(f, c) => {
-                let estantes = self.estantes();
-                let Some(clave) = estantes.get(f).and_then(|e| e.1.get(c)).map(|i| i.clave()) else { return Task::none() };
-                // Clic en la que ya está elegida: a jugar.
-                let ya = self.bp == (f, c) && self.sel.as_deref() == Some(clave.as_str());
+                let (clave, largo) = {
+                    let estantes = self.estantes();
+                    let Some(k) = estantes.get(f).and_then(|e| e.1.get(c)).map(|i| i.clave()) else { return Task::none() };
+                    (k, estantes.len())
+                };
+                let _ = largo;
                 self.bp = (f, c);
-                self.sel = Some(clave.clone());
-                if ya && !self.partidas.contains_key(&clave) && self.ultimo_bp.is_some_and(|t| t.elapsed() < Duration::from_millis(450)) {
-                    self.ultimo_bp = None;
-                    return self.update(Msg::Jugar(clave));
+                self.sel = Some(clave);
+                // Solo se mueve la «ventana» de estantes y tarjetas cuando la elegida se sale de ella.
+                let (filas, cols) = crate::vistas::grande::cabe(self.ventana);
+                if f < self.bp_fila0 {
+                    self.bp_fila0 = f;
+                } else if f >= self.bp_fila0 + filas {
+                    self.bp_fila0 = f + 1 - filas;
                 }
-                self.ultimo_bp = Some(Instant::now());
-                // Que la tarjeta elegida se vea: la fila en vertical y la tarjeta en horizontal.
-                use iced::widget::scrollable::{self, AbsoluteOffset};
-                let x = (c as f32 * (crate::vistas::grande::TARJETA + crate::vistas::grande::HUECO) - self.ventana.width * 0.35).max(0.0);
-                let y = (f as f32 * crate::vistas::grande::ALTO_ESTANTE - 40.0).max(0.0);
-                return Task::batch([
-                    scrollable::scroll_to(scrollable::Id::new(format!("bp-{f}")), AbsoluteOffset { x, y: 0.0 }),
-                    scrollable::scroll_to(scrollable::Id::new("bp"), AbsoluteOffset { x: 0.0, y }),
-                ]);
+                let c0 = self.bp_col0.entry(f).or_insert(0);
+                if c < *c0 {
+                    *c0 = c;
+                } else if c >= *c0 + cols {
+                    *c0 = c + 1 - cols;
+                }
+                let _ = largo;
+                return Task::none();
+            }
+            Msg::PedirCompilar(c) => self.confirmar_compilar = c,
+            Msg::Compilar(clave) => {
+                self.confirmar_compilar = None;
+                let Some(inst) = self.instancia(&clave).filter(|i| i.origen == Origen::Horizon).cloned() else { return Task::none() };
+                if self.compilando.contains_key(&clave) {
+                    return Task::none();
+                }
+                self.compilado.remove(&clave);
+                self.compilando.insert(clave.clone(), "Empezando…".into());
+                return Task::stream(motor::compilar(inst.id)).map(move |c| Msg::Compilando(clave.clone(), c));
+            }
+            Msg::Compilando(clave, c) => match c {
+                motor::Compila::Linea(l) => {
+                    self.compilando.insert(clave, l);
+                }
+                motor::Compila::Fin(r) => {
+                    self.compilando.remove(&clave);
+                    let nombre = self.instancia(&clave).map(|i| i.nombre.clone()).unwrap_or_default();
+                    match &r {
+                        Ok(()) => self.avisa(format!("{nombre}: mods compilados, ya puedes jugar"), false),
+                        Err(e) => self.avisa(format!("{nombre}: no se pudo compilar: {e}"), true),
+                    }
+                    self.compilado.insert(clave, r);
+                }
+            },
+            Msg::BPRueda(dx, dy) => {
+                // La rueda del ratón: arriba y abajo cambian de estante; de lado, de tarjeta.
+                if dy.abs() >= dx.abs() && dy != 0.0 {
+                    return self.update(Msg::BPMover(0, if dy > 0.0 { -1 } else { 1 }));
+                }
+                if dx != 0.0 {
+                    return self.update(Msg::BPMover(if dx > 0.0 { -1 } else { 1 }, 0));
+                }
             }
             Msg::BPEditar => {
                 if self.grande && self.dlg.is_none() {
@@ -2677,7 +2760,13 @@ impl App {
                 }
             }
             Msg::CerrarMenu => self.menu = None,
-            Msg::Ventana(sz) => self.ventana = sz,
+            Msg::Ventana(sz) => {
+                self.ventana = sz;
+                if self.grande {
+                    let (f, c) = self.bp;
+                    return self.update(Msg::BPElegir(f, c));
+                }
+            }
             Msg::PedirNombre(para) => {
                 let valor = match &para {
                     ParaNombre::RenombrarCarpeta(c) => c.rsplit('/').next().unwrap_or("").to_string(),
@@ -2990,6 +3079,17 @@ impl App {
                 self.update(Msg::AbrirIcono(clave))
             }
             "armario" => self.abre(Dlg::Armario),
+            "grande" => {
+                // RUSTCRAFT_BP=estante,posición: elige esa tarjeta (para probar el desplazamiento).
+                let bp = std::env::var("RUSTCRAFT_BP").ok().and_then(|v| {
+                    let (f, c) = v.split_once(',')?;
+                    Some((f.parse().ok()?, c.parse().ok()?))
+                });
+                match bp {
+                    Some((f, c)) => self.update(Msg::BPElegir(f, c)),
+                    None => Task::none(),
+                }
+            }
             "explorar" => {
                 if let Ok(c) = std::env::var("RUSTCRAFT_INSTANCIA") {
                     if !c.is_empty() {

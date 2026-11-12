@@ -125,6 +125,20 @@ pub fn vista(app: &App) -> E<'_> {
             tenue(&p, "Instancia Rust: Horizon porta el mod Java al instalarlo. «Funciona» y «en parte» son lo que dice Horizon de cada uno."),
         ));
     }
+    if rust && x.fuente == "horizon" && x.tipo == "mod" {
+        if let Some(i) = destino_inst {
+            cuerpo = cuerpo.push(aviso(
+                p,
+                p.rust,
+                row![
+                    tenue(&p, "Los mods nativos no cargan hasta que compilas el juego con ellos.").width(Length::Fill),
+                    btn(p, "Ir a compilar", Boton::Normal, Some(Msg::AbrirEditar(i.clave(), PagE::Mods))),
+                ]
+                .spacing(10)
+                .align_y(Alignment::Center),
+            ));
+        }
+    }
     if x.tipo == "shader" && rust && x.fuente == "modrinth" {
         cuerpo = cuerpo.push(aviso(p, p.rust, tenue(&p, "Horizon (Rust) usa sus propios shaders: elige «Horizon (nativos)» en De dónde.")));
     }
