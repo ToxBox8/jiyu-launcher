@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Jiyu Launcher
+GenericName=Launcher de Minecraft
+Comment=Instancias de Horizon, Java y Prism en un solo sitio
+Exec=@BIN@
+Icon=jiyu-launcher
+Terminal=false
+Categories=Game;
+Keywords=minecraft;horizon;prism;launcher;mods;
+StartupWMClass=jiyu-launcher
