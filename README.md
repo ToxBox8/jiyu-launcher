@@ -1,69 +1,86 @@
 <div align="center">
 
+**English** · [Español](README.es.md)
+
 <img src="docs/marca/banner.png" alt="Jiyu Launcher" width="100%">
 
 <p>
 <img src="https://img.shields.io/badge/Rust-iced%200.13-F4511E?style=flat-square&logo=rust&logoColor=white" alt="Rust + iced">
 <img src="https://img.shields.io/badge/Linux-x86__64-0E0E10?style=flat-square&logo=linux&logoColor=white" alt="Linux x86_64">
-<img src="https://img.shields.io/badge/motor-Horizon-F4511E?style=flat-square" alt="Motor: Horizon">
-<img src="https://img.shields.io/badge/licencia-MIT-0E0E10?style=flat-square" alt="Licencia MIT">
-<img src="https://img.shields.io/badge/telemetr%C3%ADa-ninguna-2E7D32?style=flat-square" alt="Sin telemetría">
+<img src="https://img.shields.io/badge/engine-Horizon-F4511E?style=flat-square" alt="Engine: Horizon">
+<img src="https://img.shields.io/badge/license-MIT-0E0E10?style=flat-square" alt="MIT license">
+<img src="https://img.shields.io/badge/telemetry-none-2E7D32?style=flat-square" alt="No telemetry">
 </p>
 
-**Un launcher de Minecraft con la estructura de Prism Launcher, para jugar a la vez a Horizon (Minecraft reescrito en Rust) y a Minecraft Java de siempre.**
+**A Minecraft launcher laid out like Prism Launcher, for playing Horizon (Minecraft rewritten in Rust) and classic Minecraft Java side by side.**
 
-Unos 50 MB de memoria en reposo, 0 % de CPU, y se aparta mientras juegas.
+About 50 MB of memory at idle, 0 % CPU, and it steps aside while you play.
 
-[Instalar](#instalar) · [Cómo se usa](#cómo-se-usa) · [Temas](#temas) · [Ecosistema Jiyu](#el-ecosistema-jiyu) · [Preguntas](#preguntas-frecuentes)
+[Install](#install) · [Usage](#usage) · [Themes](#themes) · [Jiyu ecosystem](#the-jiyu-ecosystem) · [FAQ](#faq)
 
 </div>
 
-![La ventana principal con el tema Jiyu Pulse](docs/capturas/principal.png)
+![The main window with the Jiyu Pulse theme](docs/capturas/principal.png)
 
-## Qué tiene
+> [!NOTE]
+> The launcher's interface is in **Spanish** for now. Menu names below are given in Spanish with their English meaning, e.g. *Ajustes* (Settings). An English interface is planned.
 
-- **Todas tus instancias en una ventana.** Las de Horizon (Rust), las de Java que crea Horizon y las de Prism Launcher, que se leen tal como están sin cambiar nada de Prism. Una insignia y un filo de color distinguen Rust de Java sin tener que leer.
-- **Tres vistas:** por grupos (con las líneas de Prism), carpetas como Nautilus, con carpetas dentro de carpetas, y lista. Carpetas de colores, orden a mano arrastrando, favoritas y un archivador para lo que no quieres ver, también grupos enteros.
-- **Mods, shaders y texturas de Modrinth** con un clic. Cada descarga va a una cola que sigue bajando mientras buscas otra cosa. Lo que ya tiene la instancia sale como «Instalado» (se reconoce por la huella del archivo), y las dependencias se bajan solas. En las instancias Rust, Horizon porta el mod Java y te dice si funciona entero o en parte.
-- **Big Picture**: pantalla completa para jugar desde el sofá, con estantes («Seguir jugando» y uno por carpeta) que se recorren con las flechas. `F11` para entrar y salir.
-- **Mods nativos de Horizon**: se instalan desde el launcher y se compilan con un botón por instancia.
-- **Armario**: tus skins en 3D, que puedes girar, la skin y las capas de tu cuenta, y una skin distinta por instancia que se pone sola al jugar.
-- **Servidores**: los añades una vez y aparecen en la lista Multijugador de todas tus instancias, con su estado en vivo (jugadores, ping y descripción).
-- **Temas**: Prism Dark, Prism Bright, Matugen y Jiyu Pulse. Con la mascota de la esquina (el gato de Prism o la de Jiyu), que se puede quitar.
-- **Ligero**: se dibuja por software por defecto, así no compite con el juego por la gráfica. Al jugar se cierra y deja un vigilante de 4 MB que lo vuelve a abrir cuando terminas.
+## Features
 
-| Big Picture | Explorar mods |
+- **All your instances in one window.** Horizon (Rust) instances, the Java instances Horizon creates, and Prism Launcher instances, read as they are without changing anything in Prism. A badge and a colored edge tell Rust from Java at a glance.
+- **A cleaner interface.** Prism's familiar layout, redrawn: smooth vector icons, rounded cards, an instance panel with play time and last played, real right-click menus, and four themes. Every list is drawn to stay fast with hundreds of instances.
+- **Three views:** groups (with Prism's divider lines), Nautilus-style folders that can live inside other folders, and a list. Colored folders, manual drag-to-sort, favorites, and an archive for what you don't want to see, including whole groups.
+- **Mods, shaders and resource packs from Modrinth** in one click. Every download goes to a queue that keeps going while you search for something else. What the instance already has shows as *Installed* (matched by file hash), and required dependencies are fetched automatically. On Rust instances, Horizon ports the Java mod and tells you whether it runs fully or partly.
+- **Modpacks:** create an instance straight from a Modrinth modpack, or copy a Prism instance into Horizon.
+- **Big Picture:** a full-screen couch mode with shelves (*Keep playing* and one per folder) that you browse with the arrow keys. `F11` toggles it.
+- **Horizon native mods:** install them from the launcher and build them with one button per instance, with live progress.
+- **Jiyu in game:** the 16 px Jiyu logo in the bottom-left corner of Horizon, and as the game window's icon. Both optional.
+- **Wardrobe:** your skins in 3D that you can spin, your account's skin and capes, and a different skin per instance that is applied automatically when you play it.
+- **Servers:** add them once and they show up in the Multiplayer list of every instance, with live status (players, ping and MOTD).
+- **Performance profiles:** GameMode, MangoHud, dedicated GPU, NVIDIA tweaks, Java memory and garbage collector, huge pages, all per PC profile.
+- **Themes:** Jiyu Pulse, Matugen, Prism Dark and Prism Bright, with a corner mascot (Prism's cat or Jiyu's) you can turn off.
+- **Lightweight:** software rendering by default so it never fights the game for the GPU. When you play, it closes and leaves a 4 MB watcher that reopens it when you're done.
+- **One-command install** that sets up system packages, Rust and Horizon (verified by SHA256) for you.
+
+**Coming next**
+
+- **Minecraft Legacy Edition instances**, alongside Horizon, Java and Prism.
+- An English interface.
+- Gamepad support in Big Picture.
+- Launching Java instances (vanilla, Fabric, Quilt) without Horizon.
+
+| Big Picture | Browse mods |
 |---|---|
-| ![Big Picture](docs/capturas/big-picture.png) | ![Explorar](docs/capturas/explorar.png) |
-| **Mods nativos de Horizon** | **Servidores** |
-| ![Mods nativos](docs/capturas/mods-nativos.png) | ![Servidores](docs/capturas/servidores.png) |
-| **Carpetas** | **Ajustes** |
-| ![Carpetas](docs/capturas/carpetas.png) | ![Ajustes](docs/capturas/ajustes.png) |
+| ![Big Picture](docs/capturas/big-picture.png) | ![Browse mods](docs/capturas/explorar.png) |
+| **Horizon native mods** | **Servers** |
+| ![Native mods](docs/capturas/mods-nativos.png) | ![Servers](docs/capturas/servidores.png) |
+| **Folders** | **Settings** |
+| ![Folders](docs/capturas/carpetas.png) | ![Settings](docs/capturas/ajustes.png) |
 
-## Temas
+## Themes
 
-Cuatro temas, que se cambian al momento en *Ajustes → Apariencia*. El principal es **Jiyu Pulse**: sumi (casi negro) con el bermellón shu de la marca Jiyu, la mascota de Jiyu en la esquina y botones redondeados.
+Four themes that switch instantly in *Ajustes → Apariencia* (Settings → Appearance). The main one is **Jiyu Pulse**: sumi (near black) with the Jiyu brand's shu vermilion, the Jiyu mascot in the corner and rounded buttons.
 
 | Jiyu Pulse | Matugen |
 |---|---|
-| ![Tema Jiyu Pulse](docs/capturas/temas/jiyu-pulse.png) | ![Tema Matugen](docs/capturas/temas/matugen.png) |
+| ![Jiyu Pulse theme](docs/capturas/temas/jiyu-pulse.png) | ![Matugen theme](docs/capturas/temas/matugen.png) |
 | **Prism Dark** | **Prism Bright** |
-| ![Tema Prism Dark](docs/capturas/temas/prism-dark.png) | ![Tema Prism Bright](docs/capturas/temas/prism-bright.png) |
+| ![Prism Dark theme](docs/capturas/temas/prism-dark.png) | ![Prism Bright theme](docs/capturas/temas/prism-bright.png) |
 
-## El ecosistema Jiyu
+## The Jiyu ecosystem
 
-Jiyu Launcher es una pieza de **Jiyu**, una familia de apps libres hechas por una persona, con la misma marca (el pulso, el bermellón shu sobre sumi y la mascota) y las mismas reglas: sin anuncios, sin cuentas propias y sin telemetría.
+Jiyu Launcher is part of **Jiyu**, a family of free apps made by one person, sharing one brand (the pulse, shu vermilion on sumi, and the mascot) and the same rules: no ads, no accounts of its own, no telemetry.
 
-| | App | Qué es | Estado |
+| | App | What it is | Status |
 |---|---|---|---|
-| <img src="assets/logo/jiyu-32.svg" width="32" alt=""> | **Jiyu Launcher** | Este launcher de Minecraft para Horizon, Java y Prism, en Rust | En desarrollo, Linux |
-| <img src="assets/logo/jiyu-pulse.svg" width="32" alt=""> | **Jiyu Pulse** | App de música para iPhone y Android: gratis, sin anuncios ni cuenta, con descargas, letras, Jam entre móviles y reproductores con personalidad (casete, vinilo) | En desarrollo |
+| <img src="assets/logo/jiyu-16.svg" width="32" alt=""> | **Jiyu Launcher** | This Minecraft launcher for Horizon, Java and Prism, written in Rust | In development, Linux |
+| <img src="assets/logo/jiyu-pulse.svg" width="32" alt=""> | **Jiyu Pulse** | A music app for iPhone and Android: free, no ads, no account, with downloads, lyrics, Jam between phones and players with personality (cassette, vinyl) | In development |
 
-Jiyu Pulse lleva el pulso de la marca en trazo suave. Jiyu Launcher lo lleva dibujado en píxeles, como un bloque más de Minecraft: el de 32 px es el del launcher y el de 16 px <img src="assets/logo/jiyu-16.svg" width="16" alt=""> es el que aparece dentro del juego.
+Jiyu Pulse draws the brand's pulse with a smooth stroke. Jiyu Launcher draws it in pixels, 16×16, like one more Minecraft block <img src="assets/logo/jiyu-16.svg" width="16" alt="">: the same logo in the launcher and inside the game.
 
-## Instalar
+## Install
 
-Solo Linux (probado en Arch/CachyOS, x86_64).
+Linux only (tested on Arch/CachyOS, x86_64).
 
 ```sh
 git clone https://github.com/ToxBox8/jiyu-launcher.git
@@ -71,199 +88,192 @@ cd jiyu-launcher
 ./instalar.sh
 ```
 
-El instalador hace todo, y te pregunta antes de instalar nada del sistema:
+The installer does everything, and asks before installing anything system-wide:
 
-1. **Paquetes del sistema** que falten: git, curl, un compilador de C y las bibliotecas de ventana (Wayland, X11, xkbcommon, Vulkan). Usa pacman, apt, dnf o zypper.
-2. **Rust**, con rustup y solo para tu usuario, si no tienes `cargo`.
-3. **Compila** el launcher y lo instala en `~/.local/bin/jiyu-launcher`, con su entrada en el menú de aplicaciones.
-4. **Horizon**, si no lo tienes: baja la última versión oficial de [horizon-rust/horizon](https://github.com/horizon-rust/horizon), comprueba su SHA256 y la deja en `~/Applications/horizon-launcher-linux-x86_64/`.
+1. **Missing system packages:** git, curl, a C compiler and the windowing libraries (Wayland, X11, xkbcommon, Vulkan). Uses pacman, apt, dnf or zypper.
+2. **Rust**, through rustup and only for your user, if you don't have `cargo`.
+3. **Builds** the launcher and installs it to `~/.local/bin/jiyu-launcher`, with an entry in your app menu.
+4. **Horizon**, if you don't have it: downloads the latest official release from [horizon-rust/horizon](https://github.com/horizon-rust/horizon), checks its SHA256 and puts it in `~/Applications/horizon-launcher-linux-x86_64/`.
 
-Opciones:
+Options:
 
-| Comando | Qué hace |
+| Command | What it does |
 |---|---|
-| `./instalar.sh --si` | Igual, pero sin preguntar |
-| `./instalar.sh --sin-horizon` | No baja Horizon (solo verás tus instancias de Prism) |
-| `./instalar.sh --desinstalar` | Quita el launcher; tus ajustes, skins e instancias se quedan |
+| `./instalar.sh --si` | Same, without asking |
+| `./instalar.sh --sin-horizon` | Doesn't download Horizon (you'll only see your Prism instances) |
+| `./instalar.sh --desinstalar` | Removes the launcher; your settings, skins and instances stay |
 
-**Para actualizar**: `git pull` y otra vez `./instalar.sh`.
+**To update:** `git pull` and run `./instalar.sh` again.
 
-### Qué necesitas para jugar
+### What you need to play
 
-- **Una cuenta de Microsoft con Minecraft: Java Edition.** Se inicia sesión desde *Cuentas*, a través de Horizon.
-- **Horizon** para las instancias Rust y para arrancar las de Java (baja Minecraft, Java y los cargadores él solo). El instalador lo pone si falta.
-- **Prism Launcher no hace falta.** Si lo tienes, sus instancias salen también y se juegan con Prism.
+- **A Microsoft account that owns Minecraft: Java Edition.** Sign in from *Cuentas* (Accounts), through Horizon.
+- **Horizon**, for Rust instances and to launch Java ones (it downloads Minecraft, Java and mod loaders itself). The installer adds it if missing.
+- **Prism Launcher is not required.** If you have it, its instances show up too and are launched with Prism.
 
-## Cómo se usa
+## Usage
 
-### Instancias
+### Instances
 
-- **Clic** elige, **doble clic** juega. El panel de la derecha enseña la elegida: pulsa su icono para cambiarlo.
-- **Clic derecho** en una instancia: Jugar, Editar, Cambiar icono, Mods, Descargar mods, shaders y texturas, Skin al jugar, Mover a otra carpeta, Abrir carpeta, Archivar y Eliminar. En las de Horizon, también Duplicar y Acceso directo en el escritorio; en las de Prism, Copiar a Horizon.
-- **Nueva instancia** (`Ctrl+N` o *Añadir instancia*): de Horizon (Rust), de Java (vanilla, Fabric, Quilt, Forge o NeoForge), copiada de Prism o desde un modpack de Modrinth. Ahí mismo eliges icono, carpeta, memoria y skin.
-- **Eliminar** pide escribir `BORRAR`. Las de Prism van a la papelera, no se borran del todo.
+- **Click** selects, **double-click** plays. The right panel shows the selected instance; click its icon to change it.
+- **Right-click** an instance: Play, Edit, Change icon, Mods, Download mods/shaders/packs, Skin on launch, Move to folder, Open folder, Archive and Delete. Horizon instances also get Duplicate and Desktop shortcut; Prism instances get Copy to Horizon.
+- **New instance** (`Ctrl+N` or *Añadir instancia*): Horizon (Rust), Java (vanilla, Fabric, Quilt, Forge or NeoForge), copied from Prism, or from a Modrinth modpack. Pick icon, folder, memory and skin right there.
+- **Delete** asks you to type `BORRAR`. Prism instances go to the trash instead of being erased.
 
-### Carpetas y grupos
+### Folders and groups
 
-- Tres vistas, arriba a la derecha: **Grupos** (como Prism, con líneas), **Carpetas** (como Nautilus: entras y sales de ellas) y **Lista**.
-- Las carpetas pueden ir unas dentro de otras («1.21 › mods»). Arrastra una instancia a una carpeta para moverla.
-- Clic derecho en una carpeta: nueva instancia dentro, carpeta nueva dentro, **color** (9 colores), renombrar, **archivar el grupo** o quitar la carpeta (lo de dentro sube un nivel).
-- **Orden**: por nombre, última vez, más jugadas o **a mano**. Para el orden a mano, arrastra una instancia encima de otra.
-- **Archivador** (abajo a la derecha): lo archivado no sale en la ventana ni en las búsquedas, pero sigue ahí con sus mundos. Se puede jugar desde dentro y sacar cuando quieras, tanto instancias sueltas como grupos enteros.
+- Three views, top right: **Grupos** (groups, like Prism), **Carpetas** (folders, like Nautilus) and **Lista** (list).
+- Folders can be nested («1.21 › mods»). Drag an instance onto a folder to move it.
+- Right-click a folder: new instance inside, new folder inside, **color** (9 colors), rename, **archive the group**, or remove the folder (its contents move up a level).
+- **Sorting:** by name, last played, most played, or **manual**: drag an instance onto another.
+- **Archive** (bottom right): archived items don't show in the window or in search, but keep their worlds. You can play from inside it and restore whenever you want, single instances or whole groups.
 
-### Descargar mods, shaders y texturas
+### Downloading mods, shaders and resource packs
 
-Se abre con *Explorar mods*, con clic derecho → *Descargar…*, o desde *Editar → Mods / Paquetes de recursos / Shaders* de una instancia (así ya va apuntando a ella).
+Open it from *Explorar mods* (Browse mods), right-click → *Descargar…*, or from an instance's *Editar → Mods / Paquetes de recursos / Shaders* (already pointed at that instance).
 
-- A la izquierda eliges **dónde instalar**, **qué buscas** (mods, paquetes de texturas, shaders, modpacks o data packs) y **de dónde** (Modrinth, Horizon o tus favoritos).
-- Cada resultado tiene su botón **Instalar**. También puedes **marcar varios** con la casilla (o con doble clic en la fila) e instalarlos juntos. Las marcas se conservan aunque cambies de búsqueda o de tipo.
-- Todo va a una **cola de descargas** que sigue bajando aunque cambies de búsqueda, de tipo o de instancia. El botón cambia a *En cola*, *Bajando…* y *✓ Instalado*, o a *Reintentar* si falla. En el pie, *Descargas* enseña la cola con el error de cada una.
-- Lo que la instancia **ya tiene** sale como *Instalado*: se reconoce la huella (SHA-1) de cada archivo en Modrinth.
-- Las **dependencias obligatorias** se bajan solas, para la versión de Minecraft y el cargador de la instancia.
-- **Filtros**: cargador y «Solo para tu versión». Si no hay nada hecho para tu versión (pasa con las snapshots), te enseña los de cualquier versión y te avisa.
-- Al llegar al final de la lista se cargan más resultados solos.
-- La **estrella** guarda un proyecto en favoritos.
-- Si intentas meter un mod en una instancia sin Fabric ni Forge, o un data pack fuera de un mundo, te lo dice en vez de instalarlo mal.
+- On the left you pick **where to install**, **what you're looking for** (mods, resource packs, shaders, modpacks or data packs) and **from where** (Modrinth, Horizon or your favorites).
+- Every result has its own **Install** button. You can also **tick several** (checkbox or double-click the row) and install them together. Ticks are kept across searches and types.
+- Everything goes to a **download queue** that keeps going while you change search, type or instance. The button changes to *Queued*, *Downloading…* and *✓ Installed*, or *Retry* if it fails. *Descargas* in the footer shows the queue with each error.
+- What the instance **already has** shows as *Installed*, matched by each file's SHA-1 on Modrinth.
+- **Required dependencies** are downloaded automatically for the instance's Minecraft version and loader.
+- **Filters:** loader and «only for your version». If nothing exists for your version (common with snapshots), it shows any version and tells you.
+- More results load as you reach the end of the list.
+- The **star** saves a project to your favorites.
+- Putting a mod into an instance without Fabric or Forge, or a data pack outside a world, gets a clear warning instead of a broken install.
 
-Cómo instala según la instancia:
+How it installs per instance type:
 
-| Instancia | Cómo se instala |
+| Instance | How it's installed |
 |---|---|
-| Prism | Directo de Modrinth a su carpeta `mods/`, `resourcepacks/` o `shaderpacks/` |
-| Java de Horizon | Lo instala Horizon, que comprueba las sumas de cada archivo |
-| Rust (Horizon) | Horizon **porta el mod Java** a Horizon. En la lista ves si funciona entero o en parte |
-| Shaders en cualquiera | Directo de Modrinth. En las Rust, Horizon usa sus propios shaders: elige la fuente *Horizon (nativos)* |
+| Prism | Straight from Modrinth into its `mods/`, `resourcepacks/` or `shaderpacks/` folder |
+| Horizon Java | Installed by Horizon, which verifies every file's hashes |
+| Rust (Horizon) | Horizon **ports the Java mod** to Horizon. The list tells you whether it runs fully or partly |
+| Shaders anywhere | Straight from Modrinth. Rust instances use Horizon's own shaders: pick the *Horizon (nativos)* source |
 
-### Mods nativos de Horizon (compilar)
+### Horizon native mods (building)
 
-Los **mods nativos** (`.hnmod`, de la fuente *Horizon (nativos)*) no cargan hasta que se compila el juego con ellos.
+**Native mods** (`.hnmod`, from the *Horizon (nativos)* source) don't load until the game is built with them.
 
-1. Instala los mods nativos que quieras.
-2. Ve a **Editar → Mods nativos** de la instancia Rust y pulsa **Compilar mods**.
-3. Confirma. Estos mods se ejecutan con acceso total a tu ordenador, como cualquier programa: compila solo si confías en sus autores. Los del registro de Horizon están revisados; los instalados desde GitHub, no.
-4. La primera vez Horizon baja su propio Rust y tarda **20–30 minutos**; después, unos minutos. Ves el progreso en vivo, puedes cerrar la ventana y te avisa al terminar.
+1. Install the native mods you want.
+2. Go to the Rust instance's **Editar → Mods nativos** and press **Compilar mods** (Build mods).
+3. Confirm. These mods run with full access to your computer, like any program: only build them if you trust their authors. Mods from Horizon's registry are reviewed; ones installed from GitHub are not.
+4. The first time, Horizon downloads its own Rust toolchain and takes **20–30 minutes**; after that, a few minutes. Progress is shown live, you can close the window, and you get notified when it's done.
 
-Vuelve a compilar cada vez que instales, quites o actualices un mod nativo. También llegas aquí desde *Explorar* («Ir a compilar») y desde Big Picture.
+Build again every time you install, remove or update a native mod. You can also get here from *Explorar* («Ir a compilar») and from Big Picture.
 
 ### Big Picture
 
-Para jugar desde el sofá: `F11` o el botón *Big Picture* de la barra.
+For playing from the couch: `F11` or the *Big Picture* toolbar button.
 
-- Arriba sale la instancia elegida en grande, con **Jugar**, **Editar** y **Mods** (y **Compilar mods** en las Rust).
-- Debajo van los **estantes**: *Seguir jugando* (las 10 últimas) y uno por carpeta. Te mueves con las flechas o con la rueda del ratón.
-- `Intro` juega, `E` edita, `Esc` o `F11` sale. Las flechas solo mueven, nunca juegan. Con el ratón, un clic elige y otro clic sobre la elegida juega.
-- Solo se dibuja lo que cabe en pantalla. «‹ 2» o «3 ›» avisan de que hay más tarjetas a ese lado, y «Estante 3 de 6» de que hay más estantes.
+- The selected instance is shown large at the top, with **Play**, **Edit** and **Mods** (and **Build mods** on Rust instances).
+- Below are the **shelves**: *Seguir jugando* (Keep playing, your last 10) and one per folder. Move with the arrow keys or the mouse wheel.
+- `Enter` plays, `E` edits, `Esc` or `F11` exits. Arrows only move, they never launch. With the mouse, one click selects and another click on the selected card plays.
+- Only what fits on screen is drawn. «‹ 2» or «3 ›» show there are more cards on that side, and «Estante 3 de 6» (shelf 3 of 6) that there are more shelves.
 
-### Armario y skins
+### Wardrobe and skins
 
-- Tus skins en **3D**: arrastra para girarlas. Puedes importar más desde un archivo.
-- Cambia la **skin y la capa de tu cuenta** de Minecraft desde aquí.
-- **Skin por instancia** (*Editar → Skin*): la que tienes puesta, una del armario o una importada. Se sube a tu cuenta justo antes de jugar esa instancia.
-- La cabeza de tu skin sale junto a tu nombre, arriba a la derecha.
+- Your skins in **3D**: drag to spin them. Import more from a file.
+- Change your Minecraft **account skin and cape** from here.
+- **Per-instance skin** (*Editar → Skin*): your current one, one from the wardrobe or an imported one. It's uploaded to your account right before that instance launches.
+- Your skin's head appears next to your name, top right.
 
-### Servidores
+### Servers
 
-- Añade servidores (nombre y dirección) en *Servidores*. Aparecen **en la lista Multijugador de todas tus instancias**, de Horizon y de Prism.
-- Se añaden antes de jugar, o en el momento con *Ponerlos ya en todas*. Los servidores que ya tenía cada instancia se quedan, y se guarda una copia `servers.dat_old`.
-- Ves si cada servidor está en línea sin abrir el juego: jugadores, ping, descripción e icono.
+- Add servers (name and address) in *Servidores*. They appear **in the Multiplayer list of all your instances**, Horizon and Prism.
+- They're added before launching, or right away with *Ponerlos ya en todas* (add to all now). Servers each instance already had are kept, and a `servers.dat_old` backup is saved.
+- See whether each server is online without opening the game: players, ping, MOTD and icon.
 
-### Ajustes
+### Settings
 
-| Página | Qué tiene |
+| Page | What's in it |
 |---|---|
-| Rendimiento | Perfiles según tu PC, cerrar el launcher al jugar, GameMode, MangoHud, gráfica dedicada, optimizaciones de NVIDIA, memoria y recolector de Java, páginas grandes, *Dibujar con la gráfica* y el servidor integrado de Horizon en su propio hilo |
-| Apariencia | Tema, insignia Rust/Java, filo de color, hexágono para las Rust, etiqueta bajo el nombre, mascota de la esquina, tamaño de los iconos y mostrar o no las instancias de Prism |
-| Horizon | Mods nativos (perfil de compilación y límite de su caché), Jiyu dentro del juego (logo e icono de la ventana), versiones (instalar las nuevas solas, borrar las viejas y cuántas guardar) y argumentos del juego |
-| Red y sistema | Proxy (http o socks5, vale para Horizon y para las descargas del launcher), volver a abrir el launcher al cerrar el juego, espacio de las cachés y lista de atajos |
-| Avanzado | Dónde están Horizon, Prism y tus ajustes |
+| Rendimiento (Performance) | Profiles for your PC, close the launcher while playing, GameMode, MangoHud, dedicated GPU, NVIDIA tweaks, Java memory and GC, huge pages, *Dibujar con la gráfica* (GPU rendering) and Horizon's integrated server on its own thread |
+| Apariencia (Appearance) | Theme, Rust/Java badge, colored edge, hexagon for Rust, label under the name, corner mascot, icon size and whether to show Prism instances |
+| Horizon | Native mods (build profile and cache limit), Jiyu in game (logo and window icon), versions (auto-install new ones, remove old ones, how many to keep) and game arguments |
+| Red y sistema (Network & system) | Proxy (http or socks5, used by Horizon and by the launcher's downloads), reopen the launcher when the game closes, cache sizes and the shortcut list |
+| Avanzado (Advanced) | Where Horizon, Prism and your settings live |
 
-*Dibujar con la gráfica* (en Rendimiento) hace la ventana más fluida (sobre todo Big Picture a pantalla completa), pero gasta unos 150 MB en vez de 50. Se aplica al volver a abrir el launcher.
+*Dibujar con la gráfica* (GPU rendering, under Performance) makes the window smoother (especially full-screen Big Picture) but uses about 150 MB instead of 50. It applies the next time you open the launcher.
 
-### Jiyu dentro del juego (Horizon)
+### Jiyu in game (Horizon)
 
-En *Ajustes → Horizon → Jiyu dentro del juego*:
+In *Ajustes → Horizon → Jiyu dentro del juego*:
 
-- **Logo de Jiyu en el juego**: el pulso de 16 px abajo a la izquierda, en partida, en los menús y en la pantalla de título. `F1` lo esconde, como el resto de la interfaz, y se puede apagar en el propio juego (*Opciones → Mods → Jiyu Logo*). Es un mod nativo pequeño (`horizon-mod/`, va dentro del launcher): se añade al pulsar **Compilar mods** en *Editar → Mods nativos*, junto a tus otros mods nativos. Solo en las instancias Rust.
-- **Icono de Jiyu en la ventana del juego**: el logo de 16 px como icono del juego de Horizon en la barra de tareas y el selector de ventanas. Cambia el `Icon=` de `~/.local/share/applications/horizon.desktop` y lo vuelve a poner antes de cada partida, por si Horizon rehace ese archivo. Al apagarlo vuelve el icono de Horizon.
+- **Jiyu logo in game:** the 16 px pulse in the bottom-left corner, in game, in menus and on the title screen. `F1` hides it along with the rest of the HUD, and it can be turned off in the game itself (*Options → Mods → Jiyu Logo*). It's a tiny native mod (`horizon-mod/`, bundled with the launcher) that is added when you press **Compilar mods** in *Editar → Mods nativos*, alongside your other native mods. Rust instances only.
+- **Jiyu icon on the game window:** the 16 px logo as Horizon's icon in the taskbar and window switcher. It changes the `Icon=` line of `~/.local/share/applications/horizon.desktop` and re-applies it before every launch, in case Horizon rewrites that file. Turning it off restores Horizon's icon.
 
-Las instancias Java no pueden llevar el logo dentro: haría falta un mod de Fabric o Forge para cada versión.
+Java instances can't show the logo in game: that would need a Fabric or Forge mod for every version.
 
-## Teclas
+## Keys
 
-| Tecla | Ventana normal | Big Picture |
+| Key | Normal window | Big Picture |
 |---|---|---|
-| `Intro` | Jugar la instancia elegida | Jugar |
-| `← → ↑ ↓` | | Moverse por los estantes |
-| `E` | | Editar |
-| Rueda del ratón | | Cambiar de estante o de tarjeta |
-| `Esc` | Cerrar el diálogo o el menú | Salir de Big Picture |
-| `F11` | Entrar en Big Picture | Salir |
-| `Ctrl+F` | Buscar instancia | |
-| `Ctrl+N` | Nueva instancia | |
-| `Supr` | Eliminar (pide escribir BORRAR) | |
-| `F5` | Recargar | |
+| `Enter` | Play the selected instance | Play |
+| `← → ↑ ↓` | | Move across shelves |
+| `E` | | Edit |
+| Mouse wheel | | Change shelf or card |
+| `Esc` | Close the dialog or menu | Leave Big Picture |
+| `F11` | Enter Big Picture | Leave |
+| `Ctrl+F` | Search instances | |
+| `Ctrl+N` | New instance | |
+| `Delete` | Delete (asks you to type BORRAR) | |
+| `F5` | Reload | |
 
-## Preguntas frecuentes
+## FAQ
 
-**¿Hace falta tener Horizon?**
-Sí, para jugar: arranca las instancias Rust y las de Java (baja Minecraft, Java y los cargadores él solo) y hace el inicio de sesión de Microsoft. El instalador lo pone si falta. Sin Horizon solo verás tus instancias de Prism.
+**Do I need Horizon?**
+Yes, to play: it launches Rust instances and Java ones (downloading Minecraft, Java and loaders itself) and handles the Microsoft sign-in. The installer adds it if missing. Without Horizon you'll only see your Prism instances.
 
-**¿Y Prism Launcher?**
-No hace falta. Si lo tienes, sus instancias salen en la ventana y se juegan con Prism. Solo se escribe en ellas al instalar mods o al borrarlas.
+**And Prism Launcher?**
+Not needed. If you have it, its instances show up in the window and are launched with Prism. They're only written to when you install mods or delete them.
 
-**¿Funciona Essential en las instancias Rust?**
-No. Horizon lo analiza (`horizon-launcher mods check essential`) y responde *Doesn't run*. El archivo de Essential en Modrinth es un cargador de dos clases que, al arrancar Java, baja el mod de verdad (cerrado) de los servidores de Essential. Horizon solo puede portar lo que viene dentro del archivo, y ahí no hay nada. Para jugar con amigos en Horizon, usa sus propias funciones (abrir el mundo a amigos, emotes) o una instancia Java con Essential.
+**Does Essential work on Rust instances?**
+No. Horizon analyzes it (`horizon-launcher mods check essential`) and answers *Doesn't run*. Essential's file on Modrinth is a two-class loader that, once Java starts, downloads the real (closed) mod from Essential's servers. Horizon can only port what's inside the file, and there's nothing there. To play with friends on Horizon, use its own features (open to friends, emotes) or a Java instance with Essential.
 
-**¿Por qué no descarga un mod?**
-Abre *Descargas* en el pie de Explorar: cada fallo dice por qué. Lo normal es que no haya versión para tu Minecraft o tu cargador, o que la instancia no tenga cargador de mods.
+**Why won't a mod download?**
+Open *Descargas* in Browse's footer: each failure says why. Usually there's no build for your Minecraft version or loader, or the instance has no mod loader.
 
-**¿Se puede depender menos de Horizon?**
-Las descargas ya no dependen de él (salvo en sus propias instancias, donde va bien y además porta los mods a Rust). El siguiente paso sería arrancar las instancias Java por cuenta propia (vanilla, Fabric y Quilt primero), bajando Java de Adoptium o de Mojang. El inicio de sesión necesitaría una app propia en Azure aprobada por Mojang. Las instancias Rust siempre necesitarán Horizon, porque Horizon es el propio juego.
+**Can it depend less on Horizon?**
+Downloads already don't (except on Horizon's own instances, where it works well and also ports mods to Rust). The next step is launching Java instances on its own (vanilla, Fabric and Quilt first), getting Java from Adoptium or Mojang. Sign-in would need its own Azure app approved by Mojang. Rust instances will always need Horizon, because Horizon is the game itself.
 
-## Problemas conocidos
+## Known issues
 
-- **Logo dentro del juego**: el mod se ha escrito contra la API de mods nativos de tu Horizon (nightly 11-08, API 410) y sus pruebas pasan, pero aún no se ha compilado dentro del juego. Si la compilación falla, el error sale en *Editar → Mods nativos*.
-- **Mando**: Big Picture se maneja con teclado y ratón; el mando todavía no.
-- **Tipografía**: no hay letras chinas, japonesas ni coreanas incluidas; esos nombres de mods salen con cuadros.
-- **Dibujo por software**: resaltar al pasar el ratón en los menús solo funciona con *Dibujar con la gráfica*. Sin ella dejaba restos al repintar.
-- **De RustCraft a Jiyu**: si jugaste con la versión de antes del cambio de nombre, puede quedar algún vigilante viejo (`rustcraft --vigilar`) esperando a que cierres el juego. Ciérralo con `pkill -f 'release/rustcraft --vigilar'`.
+- **Logo in game:** the mod is written against your Horizon's native mod API (nightly 11-08, API 410) and its tests pass, but it hasn't been built inside the game yet. If the build fails, the error shows in *Editar → Mods nativos*.
+- **Gamepad:** Big Picture works with keyboard and mouse; gamepads aren't supported yet.
+- **Fonts:** no Chinese, Japanese or Korean glyphs are bundled; those mod names show as boxes.
+- **Software rendering:** hover highlighting in menus only works with *Dibujar con la gráfica*. Without it, it left artifacts when repainting.
+- **From RustCraft to Jiyu:** if you played with the version from before the rename, an old watcher (`rustcraft --vigilar`) may still be waiting for the game to close. Stop it with `pkill -f 'release/rustcraft --vigilar'`.
 
-## Pendiente
+## Where it stores things
 
-- Arranque propio de las instancias Java (vanilla, Fabric y Quilt) sin pasar por Horizon.
-- Mando en Big Picture.
-- App propia de Azure para el inicio de sesión, cuando Mojang la apruebe.
-- La capa propia del launcher.
-
-## Dónde guarda las cosas
-
-| Qué | Dónde |
+| What | Where |
 |---|---|
-| Ajustes | `~/.config/jiyu-launcher/ajustes.json` |
-| Skins y registros de partidas | `~/.local/share/jiyu-launcher/` |
-| Logos de mods, iconos y gatos de Prism | `~/.cache/jiyu-launcher/` (se puede borrar) |
-| Instancias de Horizon | Las de Horizon, en `~/.local/share/horizon/` |
-| Instancias de Prism | Donde las tenga Prism; solo se escribe en ellas al instalar mods o al borrar |
+| Settings | `~/.config/jiyu-launcher/ajustes.json` |
+| Skins and game logs | `~/.local/share/jiyu-launcher/` |
+| Mod logos, icons and Prism cats | `~/.cache/jiyu-launcher/` (safe to delete) |
+| Horizon instances | Horizon's own, in `~/.local/share/horizon/` |
+| Prism instances | Wherever Prism keeps them; only written to when installing mods or deleting |
 
-Si vienes de cuando se llamaba RustCraft, las carpetas `rustcraft` se renombran solas la primera vez que lo abres.
+If you're coming from when it was called RustCraft, the `rustcraft` folders are renamed automatically the first time you open it.
 
-## Privacidad
+## Privacy
 
-Sin telemetría. Solo se conecta a Modrinth (búsquedas, descargas y logos), a GitHub (los iconos de serie de Prism), a la API de Minecraft (tu skin y tus capas) y a los servidores que añadas, para ver su estado. El token de tu cuenta se pide a Horizon para un solo uso, se borra al momento y se pasa a `curl` por la entrada estándar: no se guarda en ningún sitio ni aparece en la lista de procesos.
+No telemetry. It only connects to Modrinth (search, downloads and logos), GitHub (Prism's stock icons), the Minecraft API (your skin and capes) and the servers you add, to check their status. Your account token is requested from Horizon for a single use, discarded right away and passed to `curl` through standard input: it's never stored anywhere and never shows up in the process list.
 
-## Desarrollo
+## Development
 
 ```sh
 cargo build --release
 ./target/release/jiyu-launcher
 ```
 
-La estructura del código, las medidas de rendimiento y cómo hacer capturas sin ratón están en [docs/DESARROLLO.md](docs/DESARROLLO.md). Para colaborar, mira [CONTRIBUTING.md](CONTRIBUTING.md); los cambios de cada versión están en [CHANGELOG.md](CHANGELOG.md).
+Code structure, performance numbers and how to take screenshots headlessly are in [docs/DESARROLLO.md](docs/DESARROLLO.md) (Spanish). To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md); changes per version are in [CHANGELOG.md](CHANGELOG.md).
 
-El mod nativo del logo está en [`horizon-mod/`](horizon-mod/): sus pruebas se pasan con `rustc --test horizon-mod/mixins/jiyu_logo/runtime.rs`.
+The logo's native mod lives in [`horizon-mod/`](horizon-mod/); its tests run with `rustc --test horizon-mod/mixins/jiyu_logo/runtime.rs`.
 
-## Licencia
+## License
 
-El código es MIT (ver [LICENSE](LICENSE)). La tipografía Inter va con su licencia OFL (`assets/fonts/Inter-LICENSE.txt`). El logo y la mascota de Jiyu son de la marca Jiyu y no entran en la licencia MIT.
+The code is MIT (see [LICENSE](LICENSE)). The Inter typeface ships under its OFL license (`assets/fonts/Inter-LICENSE.txt`). The Jiyu logo and mascot belong to the Jiyu brand and are not covered by the MIT license.
 
-Jiyu Launcher no es un producto oficial de Minecraft ni está aprobado por Mojang o Microsoft. Horizon y Prism Launcher son proyectos aparte.
+Jiyu Launcher is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. Horizon and Prism Launcher are separate projects.

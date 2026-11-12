@@ -484,11 +484,11 @@ fn trazo(color: &str, ancho: f32) -> String {
 }
 
 
-/// El logo de Jiyu Launcher: el pulso en píxeles, 32×32 (el de 16×16 es el que va dentro del juego).
-pub const LOGO_32: &str = include_str!("../assets/logo/jiyu-32.svg");
+/// El logo de Jiyu Launcher: el pulso en píxeles, 16×16 (el mismo que va dentro del juego).
+pub const LOGO_16: &str = include_str!("../assets/logo/jiyu-16.svg");
 
 /// Pinta un SVG entero a `lado`×`lado` (RGBA sin premultiplicar). Para el logo en píxeles conviene un
-/// múltiplo de 32, así cada píxel del dibujo cae entero.
+/// múltiplo de 16, así cada píxel del dibujo cae entero.
 fn rasteriza(fuente: &str, lado: u32) -> Option<Vec<u8>> {
     let arbol = resvg::usvg::Tree::from_str(fuente, &resvg::usvg::Options::default()).ok()?;
     let mut lienzo = resvg::tiny_skia::Pixmap::new(lado, lado)?;
@@ -509,12 +509,12 @@ fn rasteriza(fuente: &str, lado: u32) -> Option<Vec<u8>> {
 
 /// El logo a `lado` píxeles (se ve nítido con el filtro «más cercano»).
 pub fn logo_jiyu(lado: u32) -> Handle {
-    rasteriza(LOGO_32, lado).map(|px| Handle::from_rgba(lado, lado, px)).unwrap_or_else(|| Lienzo::nuevo(lado, lado).handle())
+    rasteriza(LOGO_16, lado).map(|px| Handle::from_rgba(lado, lado, px)).unwrap_or_else(|| Lienzo::nuevo(lado, lado).handle())
 }
 
 /// Icono de la ventana: el mismo logo, a 128 px.
 pub fn icono_ventana() -> Option<iced::window::Icon> {
-    iced::window::icon::from_rgba(rasteriza(LOGO_32, 128)?, 128, 128).ok()
+    iced::window::icon::from_rgba(rasteriza(LOGO_16, 128)?, 128, 128).ok()
 }
 
 /// Chevron para abrir y cerrar grupos (se ve a 10 px).
