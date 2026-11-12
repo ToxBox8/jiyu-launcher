@@ -46,6 +46,7 @@ RUSTCRAFT_ABRIR=nueva[:java|:prism|:modpack] | editar:mods|mundos|ajustes|skin|r
 RUSTCRAFT_INSTANCIA=h:mi-horizon | p:<carpeta de Prism>
 RUSTCRAFT_ELEGIR=<fila que sale seleccionada>
 RUSTCRAFT_INSTALAR=1   (en Explorar: pulsa «Instalar» sola en la fila elegida)
+RUSTCRAFT_BP=<estante>,<tarjeta>   (con RUSTCRAFT_ABRIR=grande: elige esa tarjeta de Big Picture)
 ```
 
 ## Pendiente
